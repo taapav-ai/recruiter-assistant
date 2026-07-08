@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;}
+body{margin:0;}
+::selection{background:#6366F133;}
+a{color:#6366F1;text-decoration:none;}
+a:hover{color:#4F46E5;text-decoration:underline;}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;overflow:hidden;background:#F8F9FC;font-family:'Plus Jakarta Sans',sans-serif;color:#1E1E2E">
+
+  <aside style="width:264px;flex-shrink:0;background:#FFFFFF;border-right:1px solid #E5E7EB;padding:28px 18px;display:flex;flex-direction:column;gap:28px;overflow-y:auto">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 6px">
+      <div style="width:36px;height:36px;border-radius:10px;background:#6366F1;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;flex-shrink:0">H</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;line-height:1.2">HR Toolkit</div>
+        <div style="font-size:12px;color:#6B7280">Панель рекрутера</div>
+      </div>
+    </div>
+
+    <nav style="display:flex;flex-direction:column;gap:4px">
+      <button onclick="{{ setModuleFeedback }}" style="width:100%;text-align:left;padding:11px 13px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;background:{{navFeedbackBg}};color:{{navFeedbackColor}};font-family:'Plus Jakarta Sans',sans-serif" style-hover="{{navFeedbackHover}}">
+        Фидбек для кандидатов
+      </button>
+      <button onclick="{{ setModuleAssistant }}" style="width:100%;text-align:left;padding:11px 13px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;background:{{navAssistantBg}};color:{{navAssistantColor}};font-family:'Plus Jakarta Sans',sans-serif" style-hover="{{navAssistantHover}}">
+        Recruiter Assistant
+      </button>
+    </nav>
+
+    <div style="margin-top:auto;padding:12px;background:#F8F9FC;border-radius:12px">
+      <div style="font-size:12px;color:#6B7280;line-height:1.5">Все данные на этом экране — демонстрационные, реальных вызовов ATS/API нет.</div>
+    </div>
+  </aside>
+
+  <main style="flex:1;overflow-y:auto;padding:32px 40px 60px">
+
+    <sc-if value="{{isFeedback}}" hint-placeholder-val="{{true}}">
+    <div data-screen-label="Фидбек для кандидатов" style="max-width:1120px">
+      <div style="margin-bottom:26px">
+        <h1 style="font-size:26px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em">Генератор обратной связи кандидатам</h1>
+        <p style="font-size:14px;color:#6B7280;margin:0">Сформируйте корректный и юридически безопасный отказ за несколько секунд.</p>
+      </div>
+
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1;min-width:340px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(16,24,40,0.04)">
+
+          <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="flex:1;min-width:160px">
+              <label style="display:block;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Имя кандидата</label>
+              <input style="width:100%;padding:10px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:14px;color:#1E1E2E;background:#F9FAFB;outline:none;font-family:'Plus Jakarta Sans',sans-serif" placeholder="Например, Иван Петров" value="{{fbName}}" onChange="{{onFbNameChange}}" />
+            </div>
+            <div style="flex:1;min-width:160px">
+              <label style="display:block;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Вакансия</label>
+              <input style="width:100%;padding:10px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:14px;color:#1E1E2E;background:#F9FAFB;outline:none;font-family:'Plus Jakarta Sans',sans-serif" placeholder="Например, Product Manager" value="{{fbPosition}}" onChange="{{onFbPositionChange}}" />
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="flex:1;min-width:160px">
+              <label style="display:block;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Этап отказа</label>
+              <select style="width:100%;padding:10px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:14px;color:#1E1E2E;background:#F9FAFB;outline:none;font-family:'Plus Jakarta Sans',sans-serif" value="{{fbStage}}" onChange="{{onFbStageChange}}">
+                <sc-for list="{{stageOptions}}" as="opt" hint-placeholder-count="5">
+                  <option value="{{opt.value}}">{{opt.label}}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div style="flex:1;min-width:160px">
+              <label style="display:block;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Тон фидбека</label>
+              <select style="width:100%;padding:10px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:14px;color:#1E1E2E;background:#F9FAFB;outline:none;font-family:'Plus Jakarta Sans',sans-serif" value="{{fbTone}}" onChange="{{onFbToneChange}}">
+                <sc-for list="{{toneOptions}}" as="opt" hint-placeholder-count="3">
+                  <option value="{{opt.value}}">{{opt.label}}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div style="flex:1;min-width:120px">
+              <label style="display:block;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Язык</label>
+              <select style="width:100%;padding:10px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:14px;color:#1E1E2E;background:#F9FAFB;outline:none;font-family:'Plus Jakarta Sans',sans-serif" value="{{fbLang}}" onChange="{{onFbLangChange}}">
+                <sc-for list="{{langOptions}}" as="opt" hint-placeholder-count="3">
+                  <option value="{{opt.value}}">{{opt.label}}</option>
+                </sc-for>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom:18px">
+            <label style="display:block;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Причина отказа (для внутренней логики, в текст не попадает дословно)</label>
+            <textarea style="width:100%;padding:10px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13.5px;color:#1E1E2E;background:#F9FAFB;outline:none;resize:vertical;font-family:'Plus Jakarta Sans',sans-serif" rows="3" placeholder="Например: недостаточно опыта в управлении командой" value="{{fbReason}}" onChange="{{onFbReasonChange}}"></textarea>
+          </div>
+
+          <button onclick="{{generateFeedback}}" disabled="{{cannotGenerate}}" style="width:100%;padding:13px 16px;background:{{generateBg}};color:#fff;border:none;border-radius:10px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif" style-hover="{{generateHoverBg}}">
+            Сгенерировать фидбек
+          </button>
+        </div>
+
+        <div style="flex:1;min-width:340px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(16,24,40,0.04)">
+          <sc-if value="{{hasFeedbackResult}}" hint-placeholder-val="{{true}}">
+            <div style="display:flex;align-items:center;gap:8px;background:#ECFDF5;color:#10B981;padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:600;margin-bottom:14px;width:fit-content">
+              ✅ Проверено на юридические риски
+            </div>
+            <sc-if value="{{hasRiskFlag}}">
+              <div style="font-size:12px;color:#F59E0B;margin:-8px 0 14px;font-weight:600">⚠ Исключено рискованных упоминаний из причины: {{riskFlagCount}} — они не попали в текст.</div>
+            </sc-if>
+
+            <div style="white-space:pre-wrap;font-size:14px;line-height:1.65;color:#1E1E2E;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:16px;min-height:180px">{{feedbackResultText}}</div>
+
+            <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+              <button onclick="{{copyFeedback}}" style="flex:1;min-width:120px;padding:10px 14px;border:1px solid #E5E7EB;border-radius:10px;background:#fff;font-size:13px;font-weight:600;color:{{copyColor}};cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">{{copyLabel}}</button>
+              <button onclick="{{regenerateFeedback}}" style="flex:1;min-width:120px;padding:10px 14px;border:1px solid #E5E7EB;border-radius:10px;background:#fff;font-size:13px;font-weight:600;color:#374151;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Перегенерировать</button>
+              <button onclick="{{sendToAts}}" style="flex:1;min-width:120px;padding:10px 14px;border:none;border-radius:10px;background:#EEF0FF;font-size:13px;font-weight:600;color:#4338CA;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">{{atsLabel}}</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{hasNoFeedbackResult}}">
+            <div style="min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;color:#6B7280;font-size:13.5px;line-height:1.6;padding:20px">
+              Заполните форму слева и нажмите «Сгенерировать фидбек» — здесь появится готовый текст сообщения кандидату.
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="margin-top:32px">
+        <h3 style="font-size:13px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px">История последних фидбеков</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+          <sc-for list="{{historyDisplay}}" as="h" hint-placeholder-count="5">
+            <div style="background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:14px" style-hover="box-shadow:0 4px 12px rgba(16,24,40,0.06)">
+              <div style="font-size:13.5px;font-weight:700;margin-bottom:2px">{{h.name}}</div>
+              <div style="font-size:12.5px;color:#6B7280;margin-bottom:8px">{{h.position}}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:11px;color:#6366F1;font-weight:600;background:#EEF0FF;padding:3px 8px;border-radius:20px">{{h.stage}}</span>
+                <span style="font-size:11.5px;color:#9CA3AF">{{h.date}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{isAssistant}}">
+    <div data-screen-label="Recruiter Assistant" style="max-width:1200px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+
+      <div style="width:260px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;min-width:220px">
+        <div style="font-size:12px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em;padding:0 4px 4px">Кандидаты ({{candidatesCount}})</div>
+        <sc-for list="{{candidatesDisplay}}" as="c" hint-placeholder-count="3">
+          <button onclick="{{c.onSelect}}" style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid {{c.selBorder}};background:{{c.selBg}};cursor:pointer;text-align:left;width:100%;font-family:'Plus Jakarta Sans',sans-serif">
+            <div style="width:36px;height:36px;border-radius:50%;background:#E0E1FA;color:#4338CA;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">{{c.initials}}</div>
+            <div style="min-width:0;flex:1">
+              <div style="font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{c.name}}</div>
+              <div style="font-size:11.5px;color:#6B7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{c.position}}</div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:{{c.scoreColor}};flex-shrink:0">{{c.score}}%</div>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="flex:1;min-width:420px;display:flex;flex-direction:column;gap:20px">
+        <div>
+          <h1 style="font-size:26px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em">Recruiter Assistant</h1>
+          <p style="font-size:14px;color:#6B7280;margin:0">Досье кандидата, оценка соответствия вакансии и вопросы для интервью.</p>
+        </div>
+
+        <div onDragOver="{{onDropzoneDragOver}}" onDragLeave="{{onDropzoneDragLeave}}" onDrop="{{onDropzoneDrop}}" onClick="{{simulateUpload}}" style="border:2px dashed {{dropzoneBorder}};border-radius:16px;padding:26px;text-align:center;cursor:pointer;background:{{dropzoneBg}}">
+          <div style="width:44px;height:44px;border-radius:12px;background:#EEF0FF;color:#6366F1;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin:0 auto 10px">+</div>
+          <div style="font-size:14px;font-weight:600;color:#1E1E2E;margin-bottom:4px">Перетащите PDF-резюме сюда</div>
+          <div style="font-size:12.5px;color:#6B7280">или нажмите, чтобы загрузить пример резюме</div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <label style="font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em">Оцениваем на позицию</label>
+          <select style="padding:9px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13.5px;color:#1E1E2E;background:#F9FAFB;outline:none;font-family:'Plus Jakarta Sans',sans-serif" value="{{selectedVacancy}}" onChange="{{onVacancyChange}}">
+            <sc-for list="{{vacancies}}" as="v" hint-placeholder-count="3">
+              <option value="{{v.id}}">{{v.label}}</option>
+            </sc-for>
+          </select>
+        </div>
+
+        <sc-if value="{{hasSelectedCandidate}}" hint-placeholder-val="{{true}}">
+          <div style="background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+              <div>
+                <div style="font-size:18px;font-weight:800">{{candName}}</div>
+                <div style="font-size:13.5px;color:#6B7280;margin-top:2px">{{candPosition}} · {{candExperience}} лет опыта</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:22px;font-weight:800;color:{{matchColor}}">{{matchScore}}%</div>
+                <div style="font-size:11px;color:#9CA3AF">соответствие вакансии</div>
+              </div>
+            </div>
+
+            <div style="height:8px;background:#F3F4F6;border-radius:6px;overflow:hidden">
+              <div style="height:100%;border-radius:6px;width:{{matchScore}}%;background:{{matchColor}}"></div>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{skillsDisplay}}" as="sk" hint-placeholder-count="5">
+                <span style="font-size:12px;font-weight:600;color:#4338CA;background:#EEF0FF;padding:5px 10px;border-radius:20px">{{sk.text}}</span>
+              </sc-for>
+            </div>
+
+            <p style="font-size:13.5px;line-height:1.6;color:#374151;margin:0">{{candSummary}}</p>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#10B981;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Плюсы</div>
+                <sc-for list="{{prosDisplay}}" as="p" hint-placeholder-count="3">
+                  <div style="font-size:13px;color:#374151;line-height:1.5;margin-bottom:6px;padding-left:14px;position:relative">
+                    <span style="position:absolute;left:0;color:#10B981">•</span>{{p.text}}
+                  </div>
+                </sc-for>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#F59E0B;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Зоны риска</div>
+                <sc-for list="{{risksDisplay}}" as="r" hint-placeholder-count="2">
+                  <div style="font-size:13px;color:#374151;line-height:1.5;margin-bottom:6px;padding-left:14px;position:relative">
+                    <span style="position:absolute;left:0;color:#F59E0B">•</span>{{r.text}}
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:12px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.04em">Вопросы для интервью</div>
+            <sc-for list="{{questionsDisplay}}" as="q" hint-placeholder-count="5">
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:6px;background:#EEF0FF;color:#6366F1;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">{{q.num}}</div>
+                <div style="font-size:13.5px;color:#1E1E2E;line-height:1.55">{{q.text}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STAGE_LABELS = {
+  resume: 'этапе рассмотрения резюме',
+  screening: 'этапе скрининга',
+  test: 'этапе тестового задания',
+  interview: 'этапе интервью',
+  final: 'финальном этапе',
+};
+const STAGE_LABELS_EN = {
+  resume: 'resume review stage',
+  screening: 'screening stage',
+  test: 'take-home task stage',
+  interview: 'interview stage',
+  final: 'final stage',
+};
+const STAGE_LABELS_UA = {
+  resume: 'етапі розгляду резюме',
+  screening: 'етапі скринінгу',
+  test: 'етапі тестового завдання',
+  interview: 'етапі співбесіди',
+  final: 'фінальному етапі',
+};
+
+const STAGE_OPTIONS = [
+  { value: 'resume', label: 'Резюме' },
+  { value: 'screening', label: 'Скрининг' },
+  { value: 'test', label: 'Тестовое задание' },
+  { value: 'interview', label: 'Интервью' },
+  { value: 'final', label: 'Финал' },
+];
+
+const TONE_OPTIONS = [
+  { value: 'neutral', label: 'Нейтральный' },
+  { value: 'warm', label: 'Тёплый' },
+  { value: 'brief', label: 'Краткий' },
+];
+
+const LANG_OPTIONS = [
+  { value: 'ru', label: 'Русский' },
+  { value: 'en', label: 'English' },
+  { value: 'ua', label: 'Українська' },
+];
+
+const BLOCKED_PATTERNS = [
+  /возраст/i, /беремен/i, /замуж/i, /женат/i, /развед/i,
+  /национальн/i, /вероисповед/i, /религ/i, /инвалид/i, /здоровь/i, /ориентац/i, /\bвік\b/i,
+  /національ/i, /релігі/i, /pregnant/i, /married/i, /divorce/i, /\bage\b/i,
+  /disability/i, /nationality/i, /religion/i, /\brace\b/i, /ethnic/i,
+];
+
+function countRiskyMentions(text) {
+  if (!text) return 0;
+  let count = 0;
+  BLOCKED_PATTERNS.forEach((re) => { if (re.test(text)) count += 1; });
+  return count;
+}
+
+function buildFeedbackText(name, position, stage, tone, lang, variant) {
+  const idx = variant % 2;
+  const stageLabel = lang === 'en' ? STAGE_LABELS_EN[stage] : lang === 'ua' ? STAGE_LABELS_UA[stage] : STAGE_LABELS[stage];
+
+  const TEXTS = {
+    ru: {
+      neutral: {
+        body: `Здравствуйте, ${name}!\n\nБлагодарим за участие в отборе на позицию «${position}». По итогам оценки на ${stageLabel} мы приняли решение продолжить с другим кандидатом, чей опыт на данный момент точнее соответствует требованиям роли.`,
+        closings: [
+          'Мы искренне ценим время, которое вы уделили процессу, и будем рады рассмотреть вашу кандидатуру на другие подходящие позиции в будущем.\n\nЖелаем успехов!',
+          'Спасибо за проявленный интерес к нашей команде — будем рады видеть ваш отклик на другие открытые позиции.\n\nВсего наилучшего!',
+        ],
+      },
+      warm: {
+        body: `Здравствуйте, ${name}!\n\nСпасибо, что прошли с нами ${stageLabel} на позицию «${position}» — было приятно познакомиться с вашим опытом. По итогам обсуждения мы решили продолжить с кандидатом, чей профиль немного точнее совпал с требованиями роли на этом этапе.`,
+        closings: [
+          'Это решение ни в коей мере не умаляет вашу квалификацию, и мы будем рады видеть ваш отклик на другие позиции в нашей компании.\n\nСпасибо за уделённое время и удачи в поиске!',
+          'Пожалуйста, не воспринимайте это как оценку ваших навыков — будем рады новой встрече, если появится подходящая роль.\n\nВсего доброго и удачи!',
+        ],
+      },
+      brief: {
+        body: `Здравствуйте, ${name}.\n\nПо итогам оценки на ${stageLabel} на позицию «${position}» мы приняли решение двигаться с другим кандидатом.`,
+        closings: ['Спасибо за уделённое время.', 'Благодарим за отклик и уделённое время.'],
+      },
+    },
+    en: {
+      neutral: {
+        body: `Hi ${name},\n\nThank you for taking part in our process for the ${position} role. After the ${stageLabel}, we've decided to move forward with another candidate whose experience more closely matches the current requirements of the role.`,
+        closings: [
+          "We truly appreciate the time you invested, and we'd welcome your application for other suitable roles in the future.\n\nWishing you the best of luck!",
+          "Thank you for your interest in joining our team — we'd love to see you apply for other open roles.\n\nAll the best!",
+        ],
+      },
+      warm: {
+        body: `Hi ${name},\n\nThank you for going through the ${stageLabel} with us for the ${position} role — it was great getting to know your background. After careful consideration, we've decided to move forward with a candidate whose profile aligned slightly more closely with the role's requirements at this stage.`,
+        closings: [
+          "This decision doesn't reflect on your skills or potential, and we'd love to see you apply again for future roles with us.\n\nThank you again, and best of luck!",
+          "Please don't take this as a reflection of your abilities — we hope to cross paths again if a fitting role opens up.\n\nAll the best to you!",
+        ],
+      },
+      brief: {
+        body: `Hi ${name},\n\nAfter the ${stageLabel} for the ${position} role, we've decided to move forward with another candidate.`,
+        closings: ['Thank you for your time.', 'Thanks again for applying and for your time.'],
+      },
+    },
+    ua: {
+      neutral: {
+        body: `Вітаємо, ${name}!\n\nДякуємо за участь у відборі на позицію «${position}». За підсумками оцінки на ${stageLabel} ми вирішили продовжити роботу з іншим кандидатом, чий досвід наразі точніше відповідає вимогам ролі.`,
+        closings: [
+          'Ми щиро цінуємо час, який ви приділили процесу, і будемо раді розглянути вашу кандидатуру на інші відповідні позиції у майбутньому.\n\nБажаємо успіхів!',
+          'Дякуємо за інтерес до нашої команди — будемо раді бачити ваш відгук на інші відкриті позиції.\n\nВсього найкращого!',
+        ],
+      },
+      warm: {
+        body: `Вітаємо, ${name}!\n\nДякуємо, що пройшли з нами ${stageLabel} на позицію «${position}» — було приємно дізнатися більше про ваш досвід. За результатами обговорення ми вирішили продовжити з кандидатом, чий профіль трохи точніше збігся з вимогами ролі на цьому етапі.`,
+        closings: [
+          'Це рішення жодним чином не применшує вашу кваліфікацію, і ми будемо раді бачити ваш відгук на інші позиції в нашій компанії.\n\nДякуємо за приділений час і успіхів у пошуку!',
+          'Будь ласка, не сприймайте це як оцінку ваших навичок — будемо раді новій зустрічі, якщо з’явиться відповідна роль.\n\nВсього доброго та успіхів!',
+        ],
+      },
+      brief: {
+        body: `Вітаємо, ${name}.\n\nЗа підсумками оцінки на ${stageLabel} на позицію «${position}» ми вирішили рухатися з іншим кандидатом.`,
+        closings: ['Дякуємо за приділений час.', 'Дякуємо за відгук і приділений час.'],
+      },
+    },
+  };
+
+  const set = TEXTS[lang][tone];
+  return `${set.body}\n\n${set.closings[idx]}`;
+}
+
+const VACANCIES = [
+  { id: 'frontend', label: 'Frontend разработчик' },
+  { id: 'product', label: 'Product Manager' },
+  { id: 'data', label: 'Data-аналитик' },
+];
+
+const CANDIDATES_SEED = [
+  {
+    id: 'cand1', name: 'Анна Ковалёва', position: 'Frontend разработчик', experience: 5,
+    skills: ['React', 'TypeScript', 'CSS/SCSS', 'Redux', 'Next.js'],
+    summary: 'Frontend-разработчик с 5-летним опытом создания высоконагруженных SPA. Сильна в архитектуре компонентов и оптимизации производительности. Есть опыт менторства junior-разработчиков.',
+    scores: { frontend: 92, product: 38, data: 30 },
+    pros: ['Глубокая экспертиза в React-экосистеме', 'Опыт работы с высоконагруженными продуктами', 'Хорошие коммуникативные навыки, опыт менторства'],
+    risks: ['Нет опыта мобильной разработки', 'Ограниченный опыт бэкенд-интеграций'],
+  },
+  {
+    id: 'cand2', name: 'Дмитрий Орлов', position: 'Product Manager', experience: 7,
+    skills: ['Product Discovery', 'Roadmapping', 'A/B-тесты', 'SQL', 'Аналитика'],
+    summary: 'Продуктовый менеджер с опытом запуска и роста B2C-продуктов. Сильные аналитические навыки и опыт работы с кросс-функциональными командами.',
+    scores: { frontend: 20, product: 88, data: 55 },
+    pros: ['Сильное стратегическое мышление', 'Опыт запуска продуктов с нуля', 'Хорошее владение данными'],
+    risks: ['Мало опыта в enterprise B2B', 'Смена работы каждые ~1.5 года'],
+  },
+  {
+    id: 'cand3', name: 'Мария Соколова', position: 'Data-аналитик', experience: 3,
+    skills: ['SQL', 'Python', 'Tableau', 'A/B-тесты', 'Статистика'],
+    summary: 'Data-аналитик с опытом построения дашбордов и проведения экспериментов. Уверенно работает с большими массивами данных, есть база в статистике.',
+    scores: { frontend: 15, product: 45, data: 81 },
+    pros: ['Сильные технические навыки в SQL/Python', 'Опыт самостоятельного проведения A/B-тестов'],
+    risks: ['Небольшой опыт презентаций топ-менеджменту', 'Нет опыта data-инженерии'],
+  },
+];
+
+const UPLOAD_POOL = [
+  {
+    name: 'Игорь Петренко', position: 'Frontend разработчик', experience: 4,
+    skills: ['Vue', 'JavaScript', 'CSS', 'Webpack'],
+    summary: 'Frontend-разработчик со средним опытом, специализируется на Vue-приложениях. Хорошо разбирается в вёрстке и сборке проектов.',
+    scores: { frontend: 74, product: 25, data: 20 },
+    pros: ['Быстро осваивает новые инструменты', 'Хорошее чувство деталей в вёрстке'],
+    risks: ['Меньше опыта с React', 'Нет опыта в крупных командах'],
+  },
+  {
+    name: 'Елена Захарова', position: 'Product Manager', experience: 2,
+    skills: ['Аналитика', 'Roadmapping', 'Figma'],
+    summary: 'Начинающий продакт-менеджер с опытом ведения небольших фичей. Хорошо структурирует требования и работает с дизайном.',
+    scores: { frontend: 10, product: 60, data: 35 },
+    pros: ['Хорошая структура мышления', 'Активно учится и растёт'],
+    risks: ['Небольшой опыт самостоятельного запуска продуктов', 'Нет опыта работы с большими командами'],
+  },
+];
+
+function buildQuestions(candidate) {
+  const skillA = candidate.skills[0] || 'ключевых инструментов';
+  const skillB = candidate.skills[1] || 'смежных технологий';
+  return [
+    `Расскажите подробнее о вашем опыте работы с ${skillA} — на каких проектах вы его применяли?`,
+    `Как вы обычно подходите к использованию ${skillB} в повседневной работе?`,
+    `Опишите самый сложный проект за последние ${candidate.experience > 3 ? '2 года' : 'год'} — какой была ваша роль и какого результата удалось достичь?`,
+    `Что для вас является приоритетом при выборе следующего места работы?`,
+    `Как вы обычно выстраиваете коммуникацию с кросс-функциональными командами (продукт, дизайн, разработка)?`,
+  ];
+}
+
+function scoreColor(score) {
+  if (score >= 75) return '#10B981';
+  if (score >= 50) return '#F59E0B';
+  return '#9CA3AF';
+}
+
+function initials(name) {
+  return name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
+}
+
+class Component extends DCLogic {
+  state = {
+    module: 'feedback',
+    fbName: '',
+    fbPosition: '',
+    fbStage: 'final',
+    fbReason: '',
+    fbTone: 'neutral',
+    fbLang: 'ru',
+    fbVariant: 0,
+    feedbackResult: {
+      text: buildFeedbackText('Мария Иванова', 'Marketing Manager', 'final', 'neutral', 'ru', 0),
+      flaggedCount: 0,
+    },
+    copyState: null,
+    atsState: null,
+    fbHistory: [
+      { id: 'h1', name: 'Мария Иванова', position: 'Marketing Manager', stage: 'Финал', date: '05 июл' },
+      { id: 'h2', name: 'Сергей Волков', position: 'Backend разработчик', stage: 'Интервью', date: '03 июл' },
+      { id: 'h3', name: 'Ольга Крылова', position: 'HR BP', stage: 'Тестовое задание', date: '01 июл' },
+      { id: 'h4', name: 'Артём Быков', position: 'QA инженер', stage: 'Скрининг', date: '28 июн' },
+      { id: 'h5', name: 'Наталья Гринько', position: 'Designer', stage: 'Резюме', date: '25 июн' },
+    ],
+    candidates: CANDIDATES_SEED.map((c) => ({ ...c })),
+    selectedCandidateId: 'cand1',
+    selectedVacancy: 'frontend',
+    isDragging: false,
+    uploadCounter: 0,
+  };
+
+  setModule = (m) => this.setState({ module: m });
+  onFbNameChange = (e) => this.setState({ fbName: e.target.value });
+  onFbPositionChange = (e) => this.setState({ fbPosition: e.target.value });
+  onFbStageChange = (e) => this.setState({ fbStage: e.target.value });
+  onFbReasonChange = (e) => this.setState({ fbReason: e.target.value });
+  onFbToneChange = (e) => this.setState({ fbTone: e.target.value });
+  onFbLangChange = (e) => this.setState({ fbLang: e.target.value });
+
+  generateFeedback = () => {
+    const { fbName, fbPosition, fbStage, fbTone, fbLang, fbReason } = this.state;
+    const name = fbName.trim() || 'Кандидат';
+    const position = fbPosition.trim() || 'выбранную позицию';
+    const text = buildFeedbackText(name, position, fbStage, fbTone, fbLang, 0);
+    const flaggedCount = countRiskyMentions(fbReason);
+    const stageLabelShort = (STAGE_OPTIONS.find((s) => s.value === fbStage) || {}).label || '';
+    const newHistoryItem = {
+      id: 'h' + Date.now(),
+      name, position: fbPosition.trim() || position, stage: stageLabelShort,
+      date: formatDate(new Date()),
+    };
+    this.setState((s) => ({
+      feedbackResult: { text, flaggedCount },
+      fbVariant: 0,
+      copyState: null,
+      atsState: null,
+      fbHistory: [newHistoryItem, ...s.fbHistory].slice(0, 5),
+    }));
+  };
+
+  regenerateFeedback = () => {
+    const { fbName, fbPosition, fbStage, fbTone, fbLang, fbReason, fbVariant } = this.state;
+    const name = fbName.trim() || 'Кандидат';
+    const position = fbPosition.trim() || 'выбранную позицию';
+    const nextVariant = fbVariant + 1;
+    const text = buildFeedbackText(name, position, fbStage, fbTone, fbLang, nextVariant);
+    this.setState({
+      feedbackResult: { text, flaggedCount: countRiskyMentions(fbReason) },
+      fbVariant: nextVariant,
+      copyState: null,
+      atsState: null,
+    });
+  };
+
+  copyFeedback = () => {
+    const { feedbackResult } = this.state;
+    if (!feedbackResult) return;
+    navigator.clipboard.writeText(feedbackResult.text);
+    this.setState({ copyState: 'copied' });
+    setTimeout(() => this.setState({ copyState: null }), 1600);
+  };
+
+  sendToAts = () => {
+    this.setState({ atsState: 'sent' });
+    setTimeout(() => this.setState({ atsState: null }), 1800);
+  };
+
+  selectCandidate = (id) => this.setState({ selectedCandidateId: id });
+  onVacancyChange = (e) => this.setState({ selectedVacancy: e.target.value });
+
+  onDropzoneDragOver = (e) => { e.preventDefault(); this.setState({ isDragging: true }); };
+  onDropzoneDragLeave = () => this.setState({ isDragging: false });
+  onDropzoneDrop = (e) => { e.preventDefault(); this.simulateUpload(); };
+
+  simulateUpload = () => {
+    const { uploadCounter, candidates } = this.state;
+    const template = UPLOAD_POOL[uploadCounter % UPLOAD_POOL.length];
+    const id = 'upload' + uploadCounter;
+    const newCandidate = { ...template, id };
+    this.setState({
+      isDragging: false,
+      uploadCounter: uploadCounter + 1,
+      candidates: [...candidates, newCandidate],
+      selectedCandidateId: id,
+    });
+  };
+
+  renderVals() {
+    const s = this.state;
+    const isFeedback = s.module === 'feedback';
+    const isAssistant = s.module === 'assistant';
+
+    const historyDisplay = s.fbHistory.map((h) => ({ ...h }));
+
+    const candidatesDisplay = s.candidates.map((cItem) => {
+      const score = cItem.scores[s.selectedVacancy] ?? 0;
+      return {
+        id: cItem.id,
+        name: cItem.name,
+        position: cItem.position,
+        score,
+        scoreColor: scoreColor(score),
+        initials: initials(cItem.name),
+        selBg: cItem.id === s.selectedCandidateId ? '#EEF0FF' : '#FFFFFF',
+        selBorder: cItem.id === s.selectedCandidateId ? '#6366F1' : '#E5E7EB',
+        onSelect: () => this.selectCandidate(cItem.id),
+      };
+    });
+
+    const selectedCandidate = s.candidates.find((c) => c.id === s.selectedCandidateId) || null;
+    const hasSelectedCandidate = !!selectedCandidate;
+
+    let skillsDisplay = [];
+    let prosDisplay = [];
+    let risksDisplay = [];
+    let questionsDisplay = [];
+    let matchScore = 0;
+    let matchColor = '#9CA3AF';
+    let candName = '';
+    let candPosition = '';
+    let candExperience = 0;
+    let candSummary = '';
+
+    if (selectedCandidate) {
+      skillsDisplay = selectedCandidate.skills.map((sk, i) => ({ id: 'sk' + i, text: sk }));
+      prosDisplay = selectedCandidate.pros.map((p, i) => ({ id: 'pro' + i, text: p }));
+      risksDisplay = selectedCandidate.risks.map((r, i) => ({ id: 'risk' + i, text: r }));
+      questionsDisplay = buildQuestions(selectedCandidate).map((q, i) => ({ id: 'q' + i, num: i + 1, text: q }));
+      matchScore = selectedCandidate.scores[s.selectedVacancy] ?? 0;
+      matchColor = scoreColor(matchScore);
+      candName = selectedCandidate.name;
+      candPosition = selectedCandidate.position;
+      candExperience = selectedCandidate.experience;
+      candSummary = selectedCandidate.summary;
+    }
+
+    const canGenerate = s.fbName.trim().length > 0 && s.fbPosition.trim().length > 0;
+
+    return {
+      isFeedback, isAssistant,
+      setModuleFeedback: () => this.setModule('feedback'),
+      setModuleAssistant: () => this.setModule('assistant'),
+      navFeedbackBg: isFeedback ? '#6366F1' : 'transparent',
+      navFeedbackColor: isFeedback ? '#FFFFFF' : '#374151',
+      navFeedbackHover: isFeedback ? '' : 'background:#F3F4F6',
+      navAssistantBg: isAssistant ? '#6366F1' : 'transparent',
+      navAssistantColor: isAssistant ? '#FFFFFF' : '#374151',
+      navAssistantHover: isAssistant ? '' : 'background:#F3F4F6',
+
+      fbName: s.fbName, fbPosition: s.fbPosition, fbStage: s.fbStage, fbReason: s.fbReason,
+      fbTone: s.fbTone, fbLang: s.fbLang,
+      onFbNameChange: this.onFbNameChange, onFbPositionChange: this.onFbPositionChange,
+      onFbStageChange: this.onFbStageChange, onFbReasonChange: this.onFbReasonChange,
+      onFbToneChange: this.onFbToneChange, onFbLangChange: this.onFbLangChange,
+      stageOptions: STAGE_OPTIONS, toneOptions: TONE_OPTIONS, langOptions: LANG_OPTIONS,
+      generateFeedback: this.generateFeedback,
+      cannotGenerate: !canGenerate,
+      generateBg: canGenerate ? '#6366F1' : '#C7C9F5',
+      generateHoverBg: canGenerate ? 'background:#4F46E5' : '',
+
+      hasFeedbackResult: !!s.feedbackResult,
+      hasNoFeedbackResult: !s.feedbackResult,
+      feedbackResultText: s.feedbackResult ? s.feedbackResult.text : '',
+      hasRiskFlag: !!(s.feedbackResult && s.feedbackResult.flaggedCount > 0),
+      riskFlagCount: s.feedbackResult ? s.feedbackResult.flaggedCount : 0,
+      copyFeedback: this.copyFeedback,
+      regenerateFeedback: this.regenerateFeedback,
+      sendToAts: this.sendToAts,
+      copyLabel: s.copyState === 'copied' ? 'Скопировано ✓' : 'Скопировать',
+      copyColor: s.copyState === 'copied' ? '#10B981' : '#374151',
+      atsLabel: s.atsState === 'sent' ? 'Отправлено ✓' : 'Отправить в ATS',
+
+      historyDisplay,
+
+      vacancies: VACANCIES,
+      selectedVacancy: s.selectedVacancy,
+      onVacancyChange: this.onVacancyChange,
+
+      candidatesCount: s.candidates.length,
+      candidatesDisplay,
+      isDragging: s.isDragging,
+      dropzoneBorder: s.isDragging ? '#6366F1' : '#D1D5DB',
+      dropzoneBg: s.isDragging ? '#EEF0FF' : '#FAFAFB',
+      onDropzoneDragOver: this.onDropzoneDragOver,
+      onDropzoneDragLeave: this.onDropzoneDragLeave,
+      onDropzoneDrop: this.onDropzoneDrop,
+      simulateUpload: this.simulateUpload,
+
+      hasSelectedCandidate,
+      candName, candPosition, candExperience, candSummary,
+      skillsDisplay, prosDisplay, risksDisplay, questionsDisplay,
+      matchScore, matchColor,
+    };
+  }
+}
+</script>
+</body>
+</html>
