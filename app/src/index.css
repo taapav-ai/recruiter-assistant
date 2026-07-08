@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+::selection {
+  background: #6366f133;
+}
+
+a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+button {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+input,
+select,
+textarea {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Nav buttons (sidebar) */
+.nav-btn.is-inactive:hover {
+  background: #f3f4f6;
+}
+
+/* History cards */
+.history-card:hover {
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.06);
+}
+
+/* Primary generate button */
+.generate-btn.is-enabled:hover {
+  background: #4f46e5;
+}
